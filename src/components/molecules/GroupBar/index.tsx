@@ -8,19 +8,21 @@ type GroupBarProps = PropsWithChildren<{
     expandGroup: () => void,
     editGroup: () => void,
     color: string,
-    group: GroupType
+    group: GroupType,
+    isExpanded: boolean,
 }>;
 
-export function GroupBar({expandGroup, editGroup, color, group}: GroupBarProps): JSX.Element {
+export function GroupBar(props: GroupBarProps): JSX.Element {
+    const {expandGroup, editGroup, color, group, isExpanded} = props
     return (
         <View style={[styles.BarContainer]}>
             <IconButton
                 onPress={expandGroup}
                 size={35}
-                name="chevron-down"
+                name={isExpanded ? "chevron-up" : "chevron-down"}
             />
             
-            <Text style={{fontSize: 18, fontWeight: "bold"}}>{group.title}</Text>
+            <Text style={{fontSize: 18, fontWeight: "bold"}}>{group.name}</Text>
 
             <IconButton
                 style={{}}

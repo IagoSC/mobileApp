@@ -12,6 +12,8 @@
   "dependencies": {
     "@react-native-community/cli-platform-android": "^11.3.5",
     "@react-native/metro-config": "^0.72.7",
+    "anser": "^2.1.1",
+    "axios": "^1.4.0",
     "react": "18.2.0",
     "react-native": "0.71.11",
     "react-native-vector-icons": "^9.2.0"
@@ -22,6 +24,8 @@
     "@babel/runtime": "^7.20.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@tsconfig/react-native": "^2.0.2",
+    "@types/axios": "^0.14.0",
+    "@types/jest": "^29.2.1",
     "@types/node": "^20.3.2",
     "@types/react": "^18.0.24",
     "@types/react-native-vector-icons": "^6.4.13",

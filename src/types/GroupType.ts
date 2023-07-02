@@ -2,7 +2,7 @@ import { TaskType } from "./TaskType"
 
 export type GroupType = {
     id: string,
-    title: string,
+    name: string,
     description: string,
     tasks: TaskType[]
 }

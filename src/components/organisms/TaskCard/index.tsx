@@ -21,14 +21,14 @@ export function TaskCard({title, description}: TaskCardProps): JSX.Element {
     }
     
     return (
-      <View style={styles.sectionContainer}>
+      <View style={styles.cardContainer}>
         <View style={styles.textSection}>
           <Text
-            style={styles.sectionTitle}>
+            style={styles.title}>
             {title}
           </Text>
           <Text
-            style={styles.sectionDescription}>
+            style={styles.description}>
             {description}
           </Text>
         </View>

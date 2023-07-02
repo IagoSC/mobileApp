@@ -4,6 +4,7 @@ import { Text, View } from "react-native";
 import { GroupType } from "../../../types/GroupType";
 import { GroupBar } from "../../molecules/GroupBar";
 import { TaskCard } from "../TaskCard";
+import { TaskList } from "../../molecules/TaskList";
 
 type GroupCardProps = PropsWithChildren<{
     color: string,
@@ -22,6 +23,8 @@ export function GroupCard({color, group}: GroupCardProps): JSX.Element {
         setIsExpanded(oldState => !oldState)
     }
 
+    const tasks = group.tasks || []
+
     return (
         <View style={[styles.CardContainer]}>
             <GroupBar
@@ -29,17 +32,16 @@ export function GroupCard({color, group}: GroupCardProps): JSX.Element {
                 editGroup={editGroup}
                 expandGroup={expandGroup}
                 group={group}
+                isExpanded={isExpanded}
             />
             <View style={{flex: 1}}>
-                {isExpanded && [{id: "a"}, {id: "b"}].map(task => (
-                    <TaskCard
-                        key={`task-${task.id}`}
-                        title="New Task"
-                        description="Task description"
+                {isExpanded && 
+                    <TaskList
+                        tasks={tasks}
                     />
-                ))
                 }
             </View> 
         </View>
     )
 }
+

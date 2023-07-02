@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    sectionContainer: {
+    cardContainer: {
       flex: 1,
       marginTop: 12,
       height: 120,
@@ -19,11 +19,11 @@ export const styles = StyleSheet.create({
       flex: 2,
       justifyContent: "space-around"
     },
-    sectionTitle: {
+    title: {
       fontSize: 24,
       fontWeight: '600',
     },
-    sectionDescription: {
+    description: {
       marginTop: 8,
       fontSize: 18,
       fontWeight: '400',
