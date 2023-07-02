@@ -9,7 +9,7 @@ export type RootStackParamList = {
   FormScreen: {
     entity: "group" | "task" | "alarm"
     event: "create" | "update"
-    values: any 
+    values: FormValues 
   }
 }
 

@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { View, TextInput, Button} from "react-native"
 import { Form } from "../../organisms/Form";
-import { FormFields, FormValues } from "../../../types/FormTypes";
+import { FieldProperties, FormFields, FormValues } from "../../../types/FormTypes";
 
 type FormScreenProps = NativeStackScreenProps<RootStackParamList, 'FormScreen'>;
 
@@ -17,31 +17,34 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
     const formFields = useMemo(() => {
         switch (entity) {
             case "group":
-                return {
-                    name: {
+                return [
+                    {
+                        name: "name",
                         type: "text",
-                        placeHolder: "New Group"
+                        placeHolder: "New Group",
                     },
-                    description: {
+                    {
+                        name: "description",
                         type: "text",
-                        placeHolder: "Group Description"
+                        placeHolder: "Group Description",
                     },
-                    users: {
+                    {
+                        name: "users",
                         type: "multi-text",
-                        placeHolder: ""
+                        placeHolder: "",
                     }
-                } as FormFields
+                ]
             case "task":
-                return {
-                    title: {
+                return [
+                    {   name:"title",
                         type: "text",
                         placeHolder: "New Task"
                     },
-                    description: {
+                    {   name: "description",
                         type: "text",
                         placeHolder: "Task description"
                     }
-                } as FormFields
+                 ]
             case "alarm":
                 return {} as FormFields
             default:
@@ -56,10 +59,10 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
     }
 
     function onUpdateValues(newValues: FormValues) {
-        
+        setFormValues(newValues)
     }
 
-    function onSaveValue(){
+    function onSave(){
 
     }
 
@@ -69,11 +72,9 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
         >
             <Form
                 formFields={formFields}
+                values={formValues}
                 onChange={onUpdateValues}
-            />
-            <Button
-                title="SAVE"
-                onPress={onSaveValue}
+                onSave={onSave}
             />
         </View>
     )
