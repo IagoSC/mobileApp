@@ -1,10 +1,11 @@
 import { PropsWithChildren, useState } from "react";
 import { styles } from "./styles";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { GroupType } from "../../../types/GroupType";
 import { GroupBar } from "../../molecules/GroupBar";
-import { TaskCard } from "../TaskCard";
 import { TaskList } from "../../molecules/TaskList";
+import { useNavigation } from '@react-navigation/native';
+import { RootStackProps } from "../../../../App";
 
 type GroupCardProps = PropsWithChildren<{
     color: string,
@@ -15,8 +16,14 @@ type GroupCardProps = PropsWithChildren<{
 export function GroupCard({color, group}: GroupCardProps): JSX.Element {
     const [isExpanded, setIsExpanded]  = useState<boolean>(true)
 
-    function editGroup() {
+    const navigation = useNavigation<RootStackProps>()
 
+    function editGroup() {
+        navigation.navigate("FormScreen", {
+            entity: "group",
+            event: "update",
+            values: group
+        })
     }
 
     function expandGroup() {

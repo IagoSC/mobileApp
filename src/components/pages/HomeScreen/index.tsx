@@ -4,13 +4,17 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import { GroupList } from '../../molecules/GroupList';
 import { getAllGroups } from '../../../api/groups';
 import { BottomBar } from '../../molecules/BottomBar';
 import { GroupType } from '../../../types/GroupType';
 import { GroupCard } from '../../organisms/GroupCard';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../../App';
 
-export function HomePage(): JSX.Element {
+type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+export function HomeScreen(props: HomeProps): JSX.Element {
+
     const [groups, setGroups] = useState<GroupType[]>([]) 
 
     async function updateGroups(){
@@ -26,7 +30,6 @@ export function HomePage(): JSX.Element {
         <SafeAreaView >
             <ScrollView 
               contentInsetAdjustmentBehavior="automatic">
-              <View style={{flex: 1}}>
               {groups.map((group, idx) => (
                 <GroupCard
                     group={group}
@@ -34,7 +37,6 @@ export function HomePage(): JSX.Element {
                     color={"#0FF"}
                 />
               ))}
-              </View>
             </ScrollView>
             <BottomBar/>
         </SafeAreaView>
