@@ -2,78 +2,118 @@ import React, { useMemo, useState } from "react"
 import { RootStackParamList, RootStackProps } from "../../../../App"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { View, TextInput, Button} from "react-native"
+import { View, TextInput, Button, Text} from "react-native"
 import { Form } from "../../organisms/Form";
-import { FormFields, FormValues } from "../../../types/FormTypes";
+import { FieldProperties, FieldTypes, FormValues } from "../../../types/FormTypes";
+import { IconButton } from "../../atoms/IconButton/IconButton";
+import { createGroup, deleteGroup } from "../../../api/groups";
 
 type FormScreenProps = NativeStackScreenProps<RootStackParamList, 'FormScreen'>;
 
 
 export function FormScreen(props: FormScreenProps): JSX.Element {
-    const {entity, values} = props.route.params
+    const {entity, values, event} = props.route.params
 
     const navigation = useNavigation<RootStackProps>()
     
     const formFields = useMemo(() => {
         switch (entity) {
             case "group":
-                return {
-                    name: {
+                return [
+                    {
+                        name: "name",
                         type: "text",
-                        placeHolder: "New Group"
+                        placeholder: "New Group",
                     },
-                    description: {
+                    {
+                        name: "description",
                         type: "text",
-                        placeHolder: "Group Description"
+                        placeholder: "Group Description",
                     },
-                    users: {
+                    {
+                        name: "users",
                         type: "multi-text",
-                        placeHolder: ""
+                        placeholder: "",
                     }
-                } as FormFields
+                ] as FieldProperties[] 
             case "task":
-                return {
-                    title: {
+                return [
+                    {   name:"title",
                         type: "text",
-                        placeHolder: "New Task"
+                        placeholder: "New Task"
                     },
-                    description: {
+                    {   name: "description",
                         type: "text",
-                        placeHolder: "Task description"
+                        placeholder: "Task description"
                     }
-                } as FormFields
+                 ] as FieldProperties[] 
             case "alarm":
-                return {} as FormFields
+                return [] as FieldProperties[] 
             default:
-                return {} as FormFields
+                return [] as FieldProperties[] 
         }
     }, [props.route.params])
     
     const [formValues, setFormValues] = useState<FormValues>(values)
     
-    function fun() {
-        navigation.navigate("Home")
+    function goBack() {
+        navigation.pop()
     }
 
-    function onUpdateValues(newValues: FormValues) {
-        
+    function onUpdateValues(name: string, value: FieldTypes) {
+        const newValue = {[name]: value}
+        setFormValues(values => {const newValues = ({...values, ...newValue}); console.log(newValues); return newValues})
     }
 
-    function onSaveValue(){
-
+    async function onSave(){
+        console.log(formValues)
+        if(entity === "group"){
+            if(event === "create") {
+                const newGroup = await createGroup({
+                    name: formValues.name as string,
+                    description: formValues.description as string,
+                    usersEmails: formValues.users as string[]
+                })
+            }
+        }
     }
+
+    async function onDelete(){
+        if(entity === "group"){
+            await deleteGroup(values.id as string)
+        }
+    } 
 
     return (
         <View
             style={{flex: 1}}   
-        >
+        >   
+            <View
+                style={{height: 50, flexDirection: "row", alignItems: "center", backgroundColor: "#aaa"}}
+            >
+                <IconButton
+                    style={{flex: 1}}
+                    name="chevron-left"
+                    onPress={goBack}
+                    size={30}
+                />
+                
+                <Text
+                    style={{flex: 8, alignSelf: "center"}}
+                >{`${event.toUpperCase()} GROUP`}</Text>
+                
+                <IconButton
+                    style={{flex: 1}}
+                    name="trash-can"
+                    onPress={onDelete}
+                    size={30}
+                />
+            </View>
             <Form
                 formFields={formFields}
+                values={formValues}
                 onChange={onUpdateValues}
-            />
-            <Button
-                title="SAVE"
-                onPress={onSaveValue}
+                onSave={onSave}
             />
         </View>
     )

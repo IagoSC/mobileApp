@@ -1,15 +1,13 @@
 export type FieldProperties = {
-    type: "text" | "switch" | "multi-text"
-    placeHolder: string
+    name: string,
+    label: string,
     editable?: boolean
+    placeholder?: string
+    type: "multi-text" | "text" | "switch",
 }
 
-export type FormFields = Record<string, FieldProperties>
+export type FieldTypes = boolean | string | string[]
 
-export type MultiTextFieldValue = string[]
-export type TextFieldValue = string
-
-export type FormValues = Record<
-    string,
-    MultiTextFieldValue | TextFieldValue
->
+export type FormValues = {
+    [key: string]: FieldTypes
+}

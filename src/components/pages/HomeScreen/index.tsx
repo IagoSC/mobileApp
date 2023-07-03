@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   View
@@ -9,13 +10,15 @@ import { BottomBar } from '../../molecules/BottomBar';
 import { GroupType } from '../../../types/GroupType';
 import { GroupCard } from '../../organisms/GroupCard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../../App';
+import { RootStackParamList, RootStackProps } from '../../../../App';
+import { useNavigation } from '@react-navigation/native';
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export function HomeScreen(props: HomeProps): JSX.Element {
 
     const [groups, setGroups] = useState<GroupType[]>([]) 
+    const navigation = useNavigation<RootStackProps>()
 
     async function updateGroups(){
       const groups =  await getAllGroups()
@@ -25,6 +28,14 @@ export function HomeScreen(props: HomeProps): JSX.Element {
     useEffect(() => {
         updateGroups()
     }, [])
+
+    function navigateGroupCreation(){
+      navigation.navigate("FormScreen", {
+        entity: "group",
+        event: "create",
+        values: {}
+    })
+    }
 
     return (
         <SafeAreaView >
@@ -38,7 +49,12 @@ export function HomeScreen(props: HomeProps): JSX.Element {
                 />
               ))}
             </ScrollView>
-            <BottomBar/>
+            <View style={{justifyContent: "flex-end", backgroundColor: "#F0F"}}>
+              <Button
+                title="New Group"
+                onPress={navigateGroupCreation}
+                />
+            </View>
         </SafeAreaView>
     )
 }

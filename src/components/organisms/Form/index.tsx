@@ -1,25 +1,42 @@
-import { View } from "react-native"
+import { View, Button} from "react-native"
 import { FormField } from "../../atoms/FormField"
-import { FormFields } from "../../../types/FormTypes"
+import { FormValues, FieldProperties, FieldTypes } from "../../../types/FormTypes"
 
 
 type FormProps = {
-    formFields: FormFields
-    onChange: (...params: any[]) => void
+    formFields: FieldProperties[]
+    onChange: (name: string, value: FieldTypes) => void
+    onSave: (...params: any[]) => void
+    values: FormValues
 }
 
-export function Form({formFields, onChange}: FormProps): JSX.Element {
+export function Form(props: FormProps): JSX.Element {
+    const {
+        formFields,
+        onChange,
+        onSave,
+        values
+    } = props
+
+
     return (
-        <View>
+        <View
+            style={{flex: 1, margin: 10}}
+        >
             {
-                Object.entries(formFields).map(([fieldName, fieldProperties]) => {
-                    return <FormField 
-                        name={fieldName}
+                formFields.map((fieldProperties) => {
+                    return <FormField
+                        key={`formField-${fieldProperties.name}`}
+                        value={values[fieldProperties.name]}
                         onChange={onChange}
                         {...fieldProperties}
                     />
                 })
             }
+            <Button
+                title="SAVE"
+                onPress={onSave}
+            />
         </View>
     )
 }
