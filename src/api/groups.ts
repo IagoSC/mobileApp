@@ -1,5 +1,6 @@
 import { GroupType } from "../types/GroupType";
 import { api } from ".";
+import { getData } from "../storage";
 
 
 export async function getAllGroups(): Promise<GroupType[]> {
@@ -21,7 +22,7 @@ type ICreateGroup = {
 export async function createGroup({name, description, usersEmails}: ICreateGroup): Promise<GroupType> {
     console.log(usersEmails)
     return api.post(`/groups`, {
-        userId: "1936ebb0-e16b-4109-8825-c2bbd4cee14a",
+        userId: getData("user").id,
         group: {
             name,
             description,

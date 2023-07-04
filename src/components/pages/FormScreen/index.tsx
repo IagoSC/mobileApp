@@ -52,7 +52,7 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
             default:
                 return [] as FieldProperties[] 
         }
-    }, [props.route.params])
+    }, [entity])
     
     const [formValues, setFormValues] = useState<FormValues>(values)
     
@@ -69,7 +69,7 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
         console.log(formValues)
         if(entity === "group"){
             if(event === "create") {
-                const newGroup = await createGroup({
+                await createGroup({
                     name: formValues.name as string,
                     description: formValues.description as string,
                     usersEmails: formValues.users as string[]
