@@ -1,8 +1,8 @@
 import React from "react"
-import { TextInput } from "react-native"
 import { useState, useEffect } from "react"
 import { FieldProperties } from "../../../types/FormTypes"
 import { MultiSelect } from "../MultiSelect"
+import { LabeledTextInput } from "../LabeledTextInput"
 
 type FormFieldProperties = FieldProperties & {
     onChange: (name: string, value: string[] | string | boolean) => void
@@ -23,7 +23,7 @@ export function FormField(props: FormFieldProperties): JSX.Element {
 
     switch(type){
         case "text":
-            return <TextInput
+            return <LabeledTextInput
                         editable={editable}
                         value={value as string}
                         style={{}}

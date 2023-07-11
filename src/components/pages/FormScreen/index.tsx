@@ -1,18 +1,24 @@
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useState, useContext} from "react"
 import { RootStackParamList, RootStackProps } from "../../../../App"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { View, TextInput, Button, Text} from "react-native"
+import { View, Text} from "react-native"
 import { Form } from "../../organisms/Form";
 import { FieldProperties, FieldTypes, FormValues } from "../../../types/FormTypes";
 import { IconButton } from "../../atoms/IconButton/IconButton";
-import { createGroup, deleteGroup } from "../../../api/groups";
+import { createGroup, deleteGroup, getAllGroups, updateGroup } from "../../../api/groups";
+import { CurrentUserContext } from "../../../providers/CurrentUserProvider";
+import { GroupsContext } from "../../../providers/GroupsProvider";
+import { deleteTask } from "../../../api/tasks";
 
 type FormScreenProps = NativeStackScreenProps<RootStackParamList, 'FormScreen'>;
 
 
 export function FormScreen(props: FormScreenProps): JSX.Element {
     const {entity, values, event} = props.route.params
+
+    const { setGroups } = useContext(GroupsContext);
+    const { userToken } = useContext(CurrentUserContext)
 
     const navigation = useNavigation<RootStackProps>()
     
@@ -65,22 +71,50 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
         setFormValues(values => {const newValues = ({...values, ...newValue}); console.log(newValues); return newValues})
     }
 
+    async function finishOperation() {
+        try{
+            if(!userToken) throw Error("No user assigned")
+            const groups = await getAllGroups(userToken)
+            setGroups(groups)
+            navigation.navigate("Home")
+        }catch(err){
+          navigation.navigate("Login")
+        }
+    }
+
     async function onSave(){
-        console.log(formValues)
-        if(entity === "group"){
-            if(event === "create") {
-                await createGroup({
-                    name: formValues.name as string,
-                    description: formValues.description as string,
-                    usersEmails: formValues.users as string[]
-                })
+        try{
+            if(entity === "group"){
+                if(event === "create") {
+                    await createGroup(userToken!, {
+                        name: formValues.name as string,
+                        description: formValues.description as string,
+                        usersEmails: formValues.users as string[]
+                    })
+                } if(event == "update") {
+                    await updateGroup(userToken!, {
+                        id: values.id as string,
+                        name: formValues.name as string,
+                        description: formValues.description as string,
+                        usersEmails: formValues.users as string[]
+                    })
+                }
             }
+            finishOperation()
+        }catch(err){
         }
     }
 
     async function onDelete(){
-        if(entity === "group"){
-            await deleteGroup(values.id as string)
+        try{
+            if(entity === "group"){
+                await deleteGroup(userToken!, values.id as string)
+            }
+            if(entity === "task"){
+                await deleteTask(userToken!, values.id as string)
+            }
+            finishOperation()
+        }catch(err){
         }
     } 
 
@@ -102,12 +136,15 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
                     style={{flex: 8, alignSelf: "center"}}
                 >{`${event.toUpperCase()} GROUP`}</Text>
                 
-                <IconButton
-                    style={{flex: 1}}
-                    name="trash-can"
-                    onPress={onDelete}
-                    size={30}
-                />
+                {
+                event === "update" &&
+                    <IconButton
+                        style={{flex: 1}}
+                        name="trash-can"
+                        onPress={onDelete}
+                        size={30}
+                    />
+                }
             </View>
             <Form
                 formFields={formFields}

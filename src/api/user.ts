@@ -1,6 +1,6 @@
 import { api } from ".";
 
-export async function userSignIn(email: string): Promise<UserType> {
+export async function userSignIn(email: string): Promise<UserType & {token: string}> {
     return api.post(`/users/signIn`, {
         email
     })

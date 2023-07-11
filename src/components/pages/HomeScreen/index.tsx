@@ -1,32 +1,40 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
-  Button,
   SafeAreaView,
   ScrollView,
-  View
+  View,
+  Button
 } from 'react-native';
 import { getAllGroups } from '../../../api/groups';
-import { BottomBar } from '../../molecules/BottomBar';
 import { GroupType } from '../../../types/GroupType';
 import { GroupCard } from '../../organisms/GroupCard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, RootStackProps } from '../../../../App';
 import { useNavigation } from '@react-navigation/native';
+import { CurrentUserContext } from '../../../providers/CurrentUserProvider';
+import { AppButton } from '../../atoms/AppButton';
+import { GroupsContext } from '../../../providers/GroupsProvider';
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export function HomeScreen(props: HomeProps): JSX.Element {
-
-    const [groups, setGroups] = useState<GroupType[]>([]) 
+    const {userToken} = useContext(CurrentUserContext);
+    const {groups, setGroups} = useContext(GroupsContext);
     const navigation = useNavigation<RootStackProps>()
 
-    async function updateGroups(){
-      const groups =  await getAllGroups()
-      setGroups(groups)
+
+    async function loadPage(){
+      try{
+        if(!userToken) throw Error("No user assigned")
+        const groups = await getAllGroups(userToken)
+        setGroups(groups)
+      }catch(err){
+        navigation.navigate("Login")
+      }
     }
 
     useEffect(() => {
-        updateGroups()
+      loadPage()
     }, [])
 
     function navigateGroupCreation(){
@@ -34,12 +42,23 @@ export function HomeScreen(props: HomeProps): JSX.Element {
         entity: "group",
         event: "create",
         values: {}
-    })
+      })
+    }
+    
+    function navigateTaskCreation(){
+      navigation.navigate("FormScreen", {
+        entity: "task",
+        event: "create",
+        values: {}
+      })
     }
 
     return (
-        <SafeAreaView >
-            <ScrollView 
+        <SafeAreaView
+          style={{flex: 1}}
+        >
+            <ScrollView
+              style={{height: "90%"}}
               contentInsetAdjustmentBehavior="automatic">
               {groups.map((group, idx) => (
                 <GroupCard
@@ -49,11 +68,17 @@ export function HomeScreen(props: HomeProps): JSX.Element {
                 />
               ))}
             </ScrollView>
-            <View style={{justifyContent: "flex-end", backgroundColor: "#F0F"}}>
-              <Button
+            <View style={{width: "100%", justifyContent: "space-around", flexDirection: "row", alignSelf: "flex-end", backgroundColor: "#aaa", paddingVertical: 10}}>
+              <AppButton
+                style={{width: "30%"}}
                 title="New Group"
                 onPress={navigateGroupCreation}
-                />
+              />
+              <AppButton
+                style={{width: "60%", backgroundColor: "#7fffd4", borderColor: ""}}
+                title="New Task"
+                onPress={navigateTaskCreation}
+              />
             </View>
         </SafeAreaView>
     )

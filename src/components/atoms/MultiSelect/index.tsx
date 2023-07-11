@@ -2,10 +2,10 @@ import {
     ScrollView,
     View,
     Text,
-    TextInput
 } from 'react-native';
 import { useState } from "react"
 import { IconButton } from '../IconButton/IconButton';
+import { LabeledTextInput } from '../LabeledTextInput';
 
 type MultiSelectProps = {
     values: string[]
@@ -36,7 +36,7 @@ export function MultiSelect(props: MultiSelectProps): JSX.Element {
     return (
         <View style={{flex: 1}}>
             <View style={{flexDirection: "row"}}>
-                <TextInput
+                <LabeledTextInput
                     value={textInputValue}
                     style={{ flex: 8}} 
                     onChangeText={setTextInputValue}

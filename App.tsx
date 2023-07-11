@@ -5,10 +5,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { NativeStackNavigationProp, createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FormValues } from './src/types/FormTypes';
 import { LoginScreen } from './src/components/pages/LoginScreen';
+import { AppProviders } from './src/providers/AppProviders';
 
 export type RootStackParamList = {
-  Login: undefined
-  Home: {userId: string} | undefined;
+  Login: undefined;
+  Home: { refresh?: boolean } | undefined
   FormScreen: {
     entity: "group" | "task" | "alarm"
     event: "create" | "update"
@@ -23,11 +24,13 @@ function App(): JSX.Element {
   const Stack = createNativeStackNavigator<RootStackParamList>()
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{header: () => <></>}}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="FormScreen" component={FormScreen} />
-      </Stack.Navigator>
+      <AppProviders>
+        <Stack.Navigator screenOptions={{header: () => <></>}}>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="FormScreen" component={FormScreen} />
+        </Stack.Navigator>
+      </AppProviders>
     </NavigationContainer>
   )
 }

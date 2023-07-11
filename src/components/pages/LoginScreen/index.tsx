@@ -1,54 +1,88 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Button,
-  TextInput,
-  View
+  View,
+  Text
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../../App';
-import { getData, setData } from '../../../storage';
+import { RootStackProps } from '../../../../App';
 import { userSignIn, userSignUp } from '../../../api/user';
+import { CurrentUserContext } from '../../../providers/CurrentUserProvider';
+import { LabeledTextInput } from '../../atoms/LabeledTextInput';
+import { styles } from './styles';
+import { useNavigation } from '@react-navigation/native';
 
-type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
+export function LoginScreen(): JSX.Element {
+    const {userToken, setUser, setUserToken} = useContext(CurrentUserContext);
 
-export function LoginScreen(props: LoginProps): JSX.Element {
+    const [loading, setLoading] = useState<boolean>(false)
     const [email, setEmail] = useState<string>()
+    
+    const navigation = useNavigation<RootStackProps>()
 
     useEffect(() => {
-      const userId = getData("userId")
-      if(userId){
-        console.log("Signing In")
-        props.navigation.navigate("Home", {userId})
-      }
+      cleanUp()
+      if(userToken)
+        navigation.navigate("Home")
     }, [])
     
+    function cleanUp(){
+      setLoading(false)
+      setEmail("")
+    }
 
-    async function signIn(){
+    async function signIn() {
       if(!email) return
-      const result = await userSignIn(email)
-      setData("user", result)
-      props.navigation.navigate("Home", {userId: result.id})
+      try{
+        setLoading(true)
+        const {token, ...result} = await userSignIn(email)
+        console.log(token)
+        setUser(result)
+        setUserToken(token)
+        await new Promise((resolve) => setTimeout(resolve, 500))
+        navigation.navigate("Home")
+      }catch(er){
+      }finally{
+        cleanUp()
+      }
     }
     
     async function signUp(){
       if(!email) return
-      const result = await userSignUp(email)
-      setData("user", result)
-      props.navigation.navigate("Home", {userId: result.id})
+      try{
+        setLoading(true)
+        await userSignUp(email)
+        await signIn()
+      }catch(err){
+      }finally{
+        cleanUp()
+      }
+    }
+
+    function onChangeText(value: string) {
+      if(!loading) setEmail(value)
     }
 
     return (
       <View style={{justifyContent: "center", alignContent: "center", flex: 1, width: 300, alignSelf: "center"}}>
-        <TextInput
-          onChangeText={setEmail}
+        <LabeledTextInput
+          containerStyle={styles.TextInput}
+          placeholder="Email"
+          onChangeText={onChangeText}
         />
+        {
+          loading &&
+          <Text style={styles.loading}>{"Loading..."}</Text>
+        }
+
         <Button
           title='Login'
           onPress={signIn}
+          disabled={loading}
         />
         <Button
           title='Create Account'
           onPress={signUp}
+          disabled={loading}
         />
       </View>
     )

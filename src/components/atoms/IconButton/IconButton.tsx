@@ -7,7 +7,7 @@ type IconButtonProps = PropsWithChildren<{
     name: string
     style?: StyleProp<ViewStyle>
     size: number
-    color?: number | ColorValue
+    color?: ColorValue
 }>
 
 
