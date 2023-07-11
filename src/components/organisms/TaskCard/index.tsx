@@ -5,6 +5,8 @@ import { deleteTask as apiDeleteTask, completeTask } from "../../../api/tasks";
 import { CurrentUserContext } from "../../../providers/CurrentUserProvider";
 import { GroupsContext } from "../../../providers/GroupsProvider";
 import { IconButton } from "../../atoms/IconButton/IconButton";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackProps } from "../../../../App";
 
 type TaskType = {
     id: string
@@ -18,9 +20,10 @@ type TaskCardProps = PropsWithChildren<{task: TaskType}>;
 
 export function TaskCard({task}: TaskCardProps): JSX.Element {
     const {userToken} = useContext(CurrentUserContext);
-    const {groups, setGroups, refreshContext} = useContext(GroupsContext);
+    const {refreshContext} = useContext(GroupsContext);
     const [isFinished, setIsFinished] = useState<boolean>(task.isFinished)
 
+    const navigation = useNavigation<RootStackProps>()
     function confirmTask(){
       setIsFinished(currState => {
         completeTask(userToken!, {id: task.id, isFinished: !currState})
@@ -35,15 +38,22 @@ export function TaskCard({task}: TaskCardProps): JSX.Element {
       }catch(err){
       }
     }
+
+    function navigateTaskCreation(){
+      navigation.navigate("FormScreen", {
+        entity: "task",
+        event: "update",
+        values: task
+      })
+    }
     
     return (
       <View style={styles.cardContainer}>
         <IconButton 
-          name="edit"
+          name={isFinished? "radiobox-marked" : "radiobox-blank"}
           size={25}
           onPress={confirmTask}
         />
-        
         <View style={styles.textSection}>
           <Text
             style={styles.title}>
@@ -59,6 +69,11 @@ export function TaskCard({task}: TaskCardProps): JSX.Element {
               name='trash-can'
               size={25}
               onPress={deleteTask}
+            />
+            <IconButton
+              name="square-edit-outline"
+              size={25}
+              onPress={navigateTaskCreation}
             />
         </View>
       </View>

@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
       height: 120,
       flexDirection: "row",
       justifyContent: "space-between",
+      alignItems: "center",
       paddingVertical: 10, 
       paddingHorizontal: 24,
       marginHorizontal: 5,
@@ -14,10 +15,13 @@ export const styles = StyleSheet.create({
       borderWidth: 1,
     },
     textSection: {
-      flex: 4
+      flex: 4,
+      margin: 10,
+      marginLeft:20
     },
     actionsSection: {
       flex: 1,
+      alignItems: "flex-end"
     },
     title: {
       fontSize: 24,

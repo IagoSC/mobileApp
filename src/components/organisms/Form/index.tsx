@@ -1,4 +1,4 @@
-import { View, Button} from "react-native"
+import { View, Button, ScrollView} from "react-native"
 import { FormField } from "../../atoms/FormField"
 import { FormValues, FieldProperties, FieldTypes } from "../../../types/FormTypes"
 
@@ -22,16 +22,18 @@ export function Form(props: FormProps): JSX.Element {
         <View
             style={{flex: 1, margin: 10}}
         >
-            {
-                formFields.map((fieldProperties) => {
-                    return <FormField
-                        key={`formField-${fieldProperties.name}`}
-                        value={values[fieldProperties.name]}
-                        onChange={onChange}
-                        {...fieldProperties}
-                    />
-                })
-            }
+            <ScrollView>
+                {
+                    formFields.map((fieldProperties) => {
+                        return <FormField
+                            key={`formField-${fieldProperties.name}`}
+                            value={values[fieldProperties.name]}
+                            onChange={onChange}
+                            {...fieldProperties}
+                        />
+                    })
+                }
+            </ScrollView>
             <Button
                 title="SAVE"
                 onPress={onSave}

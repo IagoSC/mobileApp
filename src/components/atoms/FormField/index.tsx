@@ -2,7 +2,7 @@ import React from "react"
 import { FieldProperties, Option } from "../../../types/FormTypes"
 import { MultiSelect } from "../MultiSelect"
 import { LabeledTextInput } from "../LabeledTextInput"
-import {Picker} from '@react-native-picker/picker';
+import { LabeledSelector } from "../LabeledSelector"
 
 type FormFieldProperties = FieldProperties & {
     onChange: (name: string, value: string[] | string | boolean) => void
@@ -18,12 +18,14 @@ export function FormField(props: FormFieldProperties): JSX.Element {
         editable = true,
         name,
         value,
+        label
     } = props
 
 
     switch(type){
         case "text":
             return <LabeledTextInput
+                        label={label}
                         editable={editable}
                         value={value as string}
                         style={{}}
@@ -33,26 +35,20 @@ export function FormField(props: FormFieldProperties): JSX.Element {
         case "multi-text":
             return (
                 <MultiSelect
-                    values={value as string[] || []}
+                    label={label}
+                    values={value as string[]}
                     onChange={values => onChange(name, values)}
                 />
             )
         case "select":
             return (
-                <Picker
-                    selectedValue={value as string}
-                    onValueChange={(value) => onChange(name, value as string)}
-                >
-                    {
-                        props.options.map(option => {
-                           return <Picker.Item
-                                key={`picker-option-${option}`}
-                                value={option.value}
-                                label={option.label}
-                           />
-                        })
-                    }
-                </Picker>
+                <LabeledSelector
+                    label={label}
+                    value={value as string}
+                    options={props.options}
+                    placeholder={placeholder}
+                    onChange={value => onChange(name, value)}
+                />
             )
         default:
             return <></>

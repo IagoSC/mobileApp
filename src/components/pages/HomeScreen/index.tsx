@@ -3,7 +3,7 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  Button
+  Text
 } from 'react-native';
 import { getAllGroups } from '../../../api/groups';
 import { GroupType } from '../../../types/GroupType';
@@ -14,12 +14,14 @@ import { useNavigation } from '@react-navigation/native';
 import { CurrentUserContext } from '../../../providers/CurrentUserProvider';
 import { AppButton } from '../../atoms/AppButton';
 import { GroupsContext } from '../../../providers/GroupsProvider';
+import { IconButton } from '../../atoms/IconButton/IconButton';
+import { LoginScreen } from '../LoginScreen';
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export function HomeScreen(props: HomeProps): JSX.Element {
-    const {userToken} = useContext(CurrentUserContext);
-    const {groups, setGroups, refreshContext} = useContext(GroupsContext);
+    const {user, userToken, cleanUpContext} = useContext(CurrentUserContext);
+    const {groups, refreshContext} = useContext(GroupsContext);
     const navigation = useNavigation<RootStackProps>()
 
 
@@ -52,12 +54,32 @@ export function HomeScreen(props: HomeProps): JSX.Element {
       })
     }
 
+    function signOut(){
+      cleanUpContext()
+      navigation.navigate("Login")
+    }
+
+    function Header(){
+      return (
+        <View
+          style={{flex: 1, width: "100%", height: 100}}
+        >
+          <IconButton
+            size={25}
+            name="exit-run"
+            onPress={signOut}
+          />
+          <Text>{user?.email}</Text>
+        </View>
+      )
+    }
+
     return (
         <SafeAreaView
           style={{flex: 1}}
         >
             <ScrollView
-              style={{height: "90%"}}
+              StickyHeaderComponent={Header}
               contentInsetAdjustmentBehavior="automatic">
               {groups.map((group, idx) => (
                 <GroupCard

@@ -27,16 +27,19 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
             case "group":
                 return [
                     {
+                        label: "Name",
                         name: "name",
                         type: "text",
                         placeholder: "New Group",
                     }as FieldProperties,
                     {
+                        label: "Description",
                         name: "description",
                         type: "text",
                         placeholder: "Group Description",
                     }as FieldProperties,
                     {
+                        label: "Users emails",
                         name: "users",
                         type: "multi-text",
                         placeholder: "",
@@ -44,15 +47,21 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
                 ]
             case "task":
                 return [
-                    {   name:"title",
+                    {   
+                        label: "Title",
+                        name:"title",
                         type: "text",
                         placeholder: "New Task"
                     } as FieldProperties,
-                    {   name: "description",
+                    {   
+                        label: "Description",
+                        name: "description",
                         type: "text",
                         placeholder: "Task description",
                     }as FieldProperties,
-                    {   name: "groupId",
+                    {   
+                        label: "Task Group",
+                        name: "groupId",
                         type: "select",
                         placeholder: "Group Id",
                         options: groups.map(el => ({value: el.id, label: el.name}))

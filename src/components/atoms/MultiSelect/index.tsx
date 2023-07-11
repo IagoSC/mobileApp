@@ -2,6 +2,8 @@ import {
     ScrollView,
     View,
     Text,
+    StyleProp,
+    ViewStyle
 } from 'react-native';
 import { useState } from "react"
 import { IconButton } from '../IconButton/IconButton';
@@ -10,12 +12,16 @@ import { LabeledTextInput } from '../LabeledTextInput';
 type MultiSelectProps = {
     values: string[]
     onChange: (value: string[]) => void
+    label?: string
+    containerStyle?: StyleProp<ViewStyle>
 }
 
 export function MultiSelect(props: MultiSelectProps): JSX.Element {
     const {
-        values,
-        onChange
+        values = [],
+        onChange,
+        label,
+        containerStyle
     } = props
 
     const [textInputValue, setTextInputValue] = useState<string>()
@@ -33,10 +39,12 @@ export function MultiSelect(props: MultiSelectProps): JSX.Element {
     }
 
     return (
-        <View style={{flex: 1}}>
-            <View style={{flexDirection: "row"}}>
+        <View style={[{flex: 1}, containerStyle]}>
+            <View style={{flexDirection: "row", }}>
                 <LabeledTextInput
+                    label={label}
                     value={textInputValue}
+                    containerStyle={{width: "80%"}}
                     style={{ flex: 8}}
                     onChangeText={setTextInputValue}
                 />
