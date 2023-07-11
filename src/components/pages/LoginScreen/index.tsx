@@ -64,6 +64,8 @@ export function LoginScreen(): JSX.Element {
 
     return (
       <View style={{justifyContent: "center", alignContent: "center", flex: 1, width: 300, alignSelf: "center"}}>
+
+        <Text style={{fontSize: 40, fontWeight: "bold"}}>{"SHARED TO-DO"}</Text>
         <LabeledTextInput
           containerStyle={styles.TextInput}
           placeholder="Email"
@@ -79,6 +81,7 @@ export function LoginScreen(): JSX.Element {
           onPress={signIn}
           disabled={loading}
         />
+        <View style={{height: 10}}></View>
         <Button
           title='Create Account'
           onPress={signUp}
