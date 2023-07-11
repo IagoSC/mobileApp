@@ -18,7 +18,6 @@ export function Form(props: FormProps): JSX.Element {
         values
     } = props
 
-
     return (
         <View
             style={{flex: 1, margin: 10}}

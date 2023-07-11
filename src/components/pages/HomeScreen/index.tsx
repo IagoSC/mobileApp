@@ -19,15 +19,14 @@ type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export function HomeScreen(props: HomeProps): JSX.Element {
     const {userToken} = useContext(CurrentUserContext);
-    const {groups, setGroups} = useContext(GroupsContext);
+    const {groups, setGroups, refreshContext} = useContext(GroupsContext);
     const navigation = useNavigation<RootStackProps>()
 
 
     async function loadPage(){
       try{
         if(!userToken) throw Error("No user assigned")
-        const groups = await getAllGroups(userToken)
-        setGroups(groups)
+        refreshContext(userToken)
       }catch(err){
         navigation.navigate("Login")
       }

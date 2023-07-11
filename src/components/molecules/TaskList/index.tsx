@@ -20,9 +20,8 @@ export function TaskList({tasks}: TaskListProps): JSX.Element {
             {tasks.map(task => (
                 <TaskCard
                     key={`task-${task.id}`}
-                    name={task.name}
-                    description="Task description"
-                    />
+                    task={task}
+                />
             ))}
         </>
     )

@@ -9,7 +9,7 @@ import { IconButton } from "../../atoms/IconButton/IconButton";
 import { createGroup, deleteGroup, getAllGroups, updateGroup } from "../../../api/groups";
 import { CurrentUserContext } from "../../../providers/CurrentUserProvider";
 import { GroupsContext } from "../../../providers/GroupsProvider";
-import { deleteTask } from "../../../api/tasks";
+import { createTask, deleteTask, updateTask } from "../../../api/tasks";
 
 type FormScreenProps = NativeStackScreenProps<RootStackParamList, 'FormScreen'>;
 
@@ -17,7 +17,7 @@ type FormScreenProps = NativeStackScreenProps<RootStackParamList, 'FormScreen'>;
 export function FormScreen(props: FormScreenProps): JSX.Element {
     const {entity, values, event} = props.route.params
 
-    const { setGroups } = useContext(GroupsContext);
+    const { setGroups, groups } = useContext(GroupsContext);
     const { userToken } = useContext(CurrentUserContext)
 
     const navigation = useNavigation<RootStackProps>()
@@ -30,33 +30,38 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
                         name: "name",
                         type: "text",
                         placeholder: "New Group",
-                    },
+                    }as FieldProperties,
                     {
                         name: "description",
                         type: "text",
                         placeholder: "Group Description",
-                    },
+                    }as FieldProperties,
                     {
                         name: "users",
                         type: "multi-text",
                         placeholder: "",
-                    }
-                ] as FieldProperties[] 
+                    }as FieldProperties
+                ]
             case "task":
                 return [
                     {   name:"title",
                         type: "text",
                         placeholder: "New Task"
-                    },
+                    } as FieldProperties,
                     {   name: "description",
                         type: "text",
-                        placeholder: "Task description"
-                    }
-                 ] as FieldProperties[] 
+                        placeholder: "Task description",
+                    }as FieldProperties,
+                    {   name: "groupId",
+                        type: "select",
+                        placeholder: "Group Id",
+                        options: groups.map(el => ({value: el.id, label: el.name}))
+                    }as FieldProperties
+                 ]
             case "alarm":
-                return [] as FieldProperties[] 
+                return []
             default:
-                return [] as FieldProperties[] 
+                return []
         }
     }, [entity])
     
@@ -91,12 +96,29 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
                         description: formValues.description as string,
                         usersEmails: formValues.users as string[]
                     })
-                } if(event == "update") {
+                }
+                else if(event == "update") {
                     await updateGroup(userToken!, {
                         id: values.id as string,
                         name: formValues.name as string,
                         description: formValues.description as string,
                         usersEmails: formValues.users as string[]
+                    })
+                }
+            }else if(entity === "task"){
+                if(event === "create"){
+                    await createTask(userToken!, {
+                        title: formValues.title as string,
+                        description: formValues.description as string,
+                        groupId: formValues.groupId as string
+                    })
+                }
+                else if(event === "update"){
+                    await updateTask(userToken!, {
+                        id: values.id as string,
+                        title: formValues.title as string,
+                        description: formValues.description as string,
+                        groupId: formValues.groupId as string
                     })
                 }
             }
@@ -134,7 +156,7 @@ export function FormScreen(props: FormScreenProps): JSX.Element {
                 
                 <Text
                     style={{flex: 8, alignSelf: "center"}}
-                >{`${event.toUpperCase()} GROUP`}</Text>
+                >{`${event.toUpperCase()} ${entity.toUpperCase()}`}</Text>
                 
                 {
                 event === "update" &&

@@ -5,12 +5,14 @@ import { TaskType } from "../types/TaskType";
 type ICreateTask = {
     title: string,
     description: string,
+    groupId: string
 }
-export async function createTask(token: string, {title, description}: ICreateTask): Promise<TaskType> {
+export async function createTask(token: string, {title, description, groupId}: ICreateTask): Promise<TaskType> {
     return api.post(`/tasks`, {
         task: {
             title,
             description,
+            groupId
         },
     }, {headers: {Authorization: token}})
     .then(res => res.data)
@@ -21,16 +23,17 @@ export async function createTask(token: string, {title, description}: ICreateTas
 }
 
 type IUpdateTask = {
-    id: string,
+    id: string
     title: string,
+    groupId: string,
     description: string,
-    usersEmails: string[]
 }
-export async function updateTask(token: string, {id, title, description, usersEmails}: IUpdateTask): Promise<TaskType> {
+export async function updateTask(token: string, {id, title, description, groupId}: IUpdateTask): Promise<TaskType> {
     return api.patch(`/tasks/${id}`, {
         task: {
             title,
             description,
+            groupId
         },
     }, {headers: {Authorization: token}})
     .then(res => res.data)

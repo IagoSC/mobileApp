@@ -32,13 +32,12 @@ export function MultiSelect(props: MultiSelectProps): JSX.Element {
         setTextInputValue("")
     }
 
-
     return (
         <View style={{flex: 1}}>
             <View style={{flexDirection: "row"}}>
                 <LabeledTextInput
                     value={textInputValue}
-                    style={{ flex: 8}} 
+                    style={{ flex: 8}}
                     onChangeText={setTextInputValue}
                 />
                 <IconButton
